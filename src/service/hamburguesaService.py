@@ -121,7 +121,7 @@ class HamburguesaService:
 
 
     def edit_hamburguesa(self, id, nombre, price, descripcion, imgUrl, ingredientes):
-        cursor = None  # Inicializar el cursor fuera del bloque try
+        cursor = None
         try:
             error, is_valid = self.validar_hamburguesa(id, nombre, price, descripcion, imgUrl, ingredientes)
             if not is_valid:
@@ -136,18 +136,16 @@ class HamburguesaService:
             cursor.execute(sql_query, (nombre, price, descripcion, imgUrl, json.dumps(ingredientes), id))
             self.connection.commit()
 
-            if cursor.rowcount == 0:
-                return False
+            if cursor.rowcount > 0:
+                return True, {"message": "Hamburguesa editada correctamente"}
+            else:
+                return False, {"error": "No se pudo editar la hamburguesa"}
 
-            return True
-
-        except MySQLError as error:
-            print(f"Error actualizando la hamburguesa: {error}")
-            return False
-
+        except mysql.connector.Error as error:
+            print(f"Error al editar la hamburguesa: {error}")
+            return False, {"error": "Error en la base de datos"}
         finally:
-            if cursor:
-                cursor.close()
+            cursor.close()
 
     def validar_ingredientes(self, ingredientes):
         required_fields = ["bacon", "huevo", "pepino", "tomate", "cebolla", "lechuga"]

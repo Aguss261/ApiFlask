@@ -93,13 +93,9 @@ def create_pedido():
     if not direccion or not isinstance(hamburguesas_json, list) or not hamburguesas_json:
         return jsonify({"error": "El campo 'Faltan datos requeridos"}), 400
 
-    price = obtenerPriceTotal(hamburguesas_json)
-    state = "Pendiente"
-    hora = datetime.datetime.now().strftime('%H:%M')
-    fecha = datetime.datetime.now().strftime('%Y-%m-%d')
     user_id = get_jwt_identity()
 
-    success, result = pedidos_service.create_pedido(user_id, direccion, price, state, hora, fecha, hamburguesas_json)
+    success, result = pedidos_service.create_pedido(user_id, direccion, hamburguesas_json)
 
     if success:
         return jsonify(result), 201
@@ -107,6 +103,41 @@ def create_pedido():
         return jsonify(result), 500
 
 
+def delete_pedido(pedido_id):
+    if not isinstance(pedido_id,int) or pedido_id <= 0:
+        return jsonify({"error": "invalidad ID"}), 400
+
+    devolver = pedidos_service.delete_pedido(pedido_id)
+
+    if "error" in devolver:
+        return jsonify(devolver), 400
+    return jsonify(devolver), 200
+
+
+def edit_pedido(pedido_id):
+    data = request.get_json()
+
+    campos_esperados = {"direccion", "hamburguesas", "price"}
+
+    es_valido, mensaje_error = verificar_campos_extra(data, campos_esperados)
+    if not es_valido:
+        return jsonify({"error": mensaje_error}), 400
+
+    direccion = data.get("direccion")
+    hamburguesas = data.get("hamburguesas")
+
+
+    if not direccion or not isinstance(hamburguesas, list) or not hamburguesas:
+        return jsonify({"error": "El campo 'Faltan datos requeridos"}), 400
+
+    user_id = get_jwt_identity()
+
+    success, result = pedidos_service.edit_pedido(pedido_id,user_id, direccion, hamburguesas)
+
+    if success:
+        return jsonify(result), 201
+    else:
+        return jsonify(result), 500
 
 
 

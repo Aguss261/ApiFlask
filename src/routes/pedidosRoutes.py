@@ -1,7 +1,9 @@
 from flask import Blueprint
 from flask_jwt_extended import jwt_required
 
-from src.controller.pedidosController import get_pedidos, create_pedido, get_pedidos_by_id, get_pedidos_by_user_id, get_pedidos_by_fecha, get_pedidos_by_user
+from src.controller.pedidosController import get_pedidos, create_pedido, get_pedidos_by_id, get_pedidos_by_user_id, \
+        get_pedidos_by_fecha, get_pedidos_by_user, delete_pedido, edit_pedido
+
 from src.middleware.middleware_auth import admin_required, token_required
 
 pedidos_routes = Blueprint("pedidos_routes", __name__)
@@ -36,3 +38,13 @@ def handle_getPedidoByUser(id):
 @pedidos_routes.route("/pedidos/fecha/<fecha>", methods=["GET"])
 def handle_getPedidoByFecha(fecha):
     return get_pedidos_by_fecha(fecha)
+
+@pedidos_routes.route("/pedidos/<int:id>", methods=["DELETE"])
+def handle_deletePedido(id):
+    return delete_pedido(id)
+
+
+@pedidos_routes.route("/pedidos/<int:id>", methods=["PUT"])
+@jwt_required()
+def handle_editPedido(id):
+    return edit_pedido(id)
