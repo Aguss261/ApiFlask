@@ -1,7 +1,7 @@
 import bcrypt
 
 class User:
-    def __init__(self, id, username, email, password_hash, direccion,role_id, created_at=None, updated_at=None):
+    def __init__(self, id, username, email, password_hash, direccion,rol_id, created_at=None, updated_at=None):
         self.id = id
         self.username = username
         self.email = email
@@ -9,7 +9,7 @@ class User:
         self.direccion = direccion
         self.created_at = created_at
         self.updated_at = updated_at
-        self.role_id = role_id
+        self.rol_id = rol_id
 
     def set_password(self, password):
         self.password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
@@ -23,6 +23,7 @@ class User:
             'username': self.username,
             'email': self.email,
             'direccion': self.direccion,
+            "rol_id" : self.rol_id,
             'created_at': self.created_at,
             'updated_at': self.updated_at
         }

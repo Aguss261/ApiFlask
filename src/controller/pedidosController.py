@@ -5,6 +5,7 @@ import jwt
 import mysql
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity
+from src.utils.validator_body import verificar_campos_extra
 
 from src.service.pedidosService import PedidosService
 
@@ -91,7 +92,7 @@ def create_pedido():
     hamburguesas_json = data.get("hamburguesas")
 
     if not direccion or not isinstance(hamburguesas_json, list) or not hamburguesas_json:
-        return jsonify({"error": "El campo 'Faltan datos requeridos"}), 400
+        return jsonify({"error": "Faltan datos requeridos"}), 400
 
     user_id = get_jwt_identity()
 
@@ -152,10 +153,3 @@ def obtenerPriceTotal(hamburguesas):
 
 
 
-def verificar_campos_extra(data, campos_esperados):
-
-    campos_extra = set(data.keys()) - campos_esperados
-    if campos_extra:
-        mensaje_error = f"Campos adicionales no permitidos: {', '.join(campos_extra)}"
-        return False, mensaje_error
-    return True, None

@@ -4,6 +4,7 @@ import mysql
 from flask import Blueprint, request, jsonify
 
 from src.service.hamburguesaService import HamburguesaService
+from src.utils.validator_body import verificar_campos_extra_nif
 
 hamburguesa_service = HamburguesaService()
 
@@ -25,7 +26,7 @@ def create_hamburguesa():
 
     campos_esperados = ["nombre", "price", "descripcion", "imgUrl", "ingredientes"]
 
-    es_valido, mensaje_error = verificar_campos_extra(data, campos_esperados)
+    es_valido, mensaje_error = verificar_campos_extra_nif(data, campos_esperados)
 
     if not es_valido:
         return jsonify({"error": mensaje_error}), 400
@@ -57,14 +58,23 @@ def editHamburguesa(id):
     if not data:
         return jsonify({"Error": "No hay Data"}), 400
 
+    campos_esperados = ["nombre", "price", "descripcion", "imgUrl", "ingredientes"]
+
+    es_valido, mensaje_error = verificar_campos_extra_nif(data, campos_esperados)
+
+    if not es_valido:
+        return jsonify({"error": mensaje_error}), 400
+
     nombre = data.get('nombre')
     price = data.get('price')
     descripcion = data.get('descripcion')
     imgUrl = data.get('imgUrl')
     ingredientes = data.get('ingredientes')
 
-    result = hamburguesa_service.edit_hamburguesa(id, nombre, price, descripcion, imgUrl, ingredientes)
+    if not nombre or not price or not descripcion or not imgUrl or not ingredientes:
+        return jsonify({"error": "Faltan datos requeridos"}), 400
 
+    result = hamburguesa_service.edit_hamburguesa(id, nombre, price, descripcion, imgUrl, ingredientes)
     if result:
         return jsonify({"message": "Hamburguesa editada correctamente"}), 202
     else:
@@ -87,16 +97,13 @@ def get_hamburguesa_by_id(id):
         return jsonify({"error": "invalidad ID"}), 400
 
     try:
-        # Llamada al servicio para obtener la hamburguesa
         devolver = hamburguesa_service.get_hamburguesa_by_id(id)
 
-        # Verificación del resultado devuelto por el servicio
         if "error" in devolver:
-            return jsonify(devolver), 404  # Cambiado a 404 para 'no encontrado'
+            return jsonify(devolver), 404
         return jsonify(devolver), 200
 
     except Exception as e:
-        # Manejo de excepciones no esperadas
         print(f"Error inesperado: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
 
@@ -135,13 +142,3 @@ def get_hamburguesa_by_name(nombre):
         print(f"Error inesperado: {e}")
         return jsonify({"error": "Internal server Error"}), 500
 
-
-def verificar_campos_extra(data, campos_esperados):
-    campos_esperados_set = set(campos_esperados)
-
-    campos_esperados_set = set(campos_esperados)
-    campos_extra = set(data.keys()) - campos_esperados_set
-    if campos_extra:
-        mensaje_error = f"Campos adicionales no permitidos: {', '.join(campos_extra)}"
-        return False, mensaje_error
-    return True, None

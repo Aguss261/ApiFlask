@@ -10,6 +10,7 @@ pedidos_routes = Blueprint("pedidos_routes", __name__)
 
 
 @pedidos_routes.route("/pedidos", methods=["GET"])
+@admin_required
 def handle_getPedidos():
     return get_pedidos()
 

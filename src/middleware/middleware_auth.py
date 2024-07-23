@@ -7,7 +7,7 @@ from jwt import InvalidTokenError
 from src.controller.userController import user_service
 from src.service.userService import UserService
 from src.utils.jwt_utils import ExpiredTokenError, SECRET_KEY
-from flask_jwt_extended import verify_jwt_in_request, get_jwt, get_jwt_identity
+from flask_jwt_extended import verify_jwt_in_request, get_jwt, get_jwt_identity, jwt_required
 
 
 def decode_token(token):
@@ -46,11 +46,12 @@ def token_required(f):
 
 def admin_required(f):
     @wraps(f)
+    @jwt_required()
     def decorated(*args, **kwargs):
         user_id = get_jwt_identity()  # Obtiene el ID del usuario del token
         user_service = UserService()
         user = user_service.get_user_by_id(user_id)
-        if user and user.role_id == 8:  # Verifica si el rol del usuario es admin (rol 8)
+        if user and user.rol_id == 8:  # Verifica si el rol del usuario es admin (rol 8)
             return f(*args, **kwargs)
         return jsonify({'message': '¡Se requiere acceso de administrador!'}), 403
     return decorated

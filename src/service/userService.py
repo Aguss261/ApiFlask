@@ -41,14 +41,17 @@ class UserService:
         try:
             cursor = self.connection.cursor(dictionary=True)
             query = """
-                SELECT u.*, ur.rol_id as role_id
+                SELECT u.id, u.username, u.email, u.password_hash, u.direccion, ur.rol_id
                 FROM usuario u
                 JOIN usuario_roles ur ON u.id = ur.usuario_id
                 WHERE u.username = %s
             """
             cursor.execute(query, (username,))
             result = cursor.fetchone()
-            return User(**result) if result else None
+            if result:
+                result['rol_id'] = result.pop('rol_id')
+                return User(**result)
+            return None
         except Error as e:
             print(f"Error al obtener usuario por nombre de usuario: {e}")
             return None
