@@ -58,6 +58,41 @@ class UserService:
         finally:
             cursor.close()
 
+
+    def create_admin(self):
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute("SELECT COUNT(*) FROM usuario WHERE username = 'admin'")
+            if cursor.fetchone()[0] == 0:
+                # Insertar usuario admin
+                cursor.execute("""
+                               INSERT INTO usuario (username, password_hash, email, direccion)
+                               VALUES ('admin', 'admin', 'admin@example.com', 'casa admin')
+                           """)
+                self.connection.commit()
+                print("Admin user creado.")
+
+                cursor.execute("SELECT id FROM roles WHERE nombre = 'admin'")
+                rol_id = cursor.fetchone()[0]
+
+                cursor.execute("SELECT id FROM usuario WHERE username = 'admin'")
+                usuario_id = cursor.fetchone()[0]
+
+                cursor.execute("""
+                               INSERT INTO usuario_roles (usuario_id, rol_id)
+                               VALUES (%s, %s)
+                           """, (usuario_id, rol_id))
+                self.connection.commit()
+                print("Admin user role assigned.")
+            else:
+                print("Admin user already exists.")
+
+        except Error as e:
+            print(f"Error: {e}")
+        finally:
+            if self.connection.is_connected():
+                cursor.close()
+
     def get_user_by_id(self, user_id):
         try:
             cursor = self.connection.cursor(dictionary=True)

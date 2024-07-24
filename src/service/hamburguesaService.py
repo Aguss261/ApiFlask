@@ -4,7 +4,6 @@ from MySQLdb import MySQLError
 from flask import jsonify
 
 from src.database.conexion import get_mysql_connection
-from src.models.hamburguesa import Hamburguesa
 import mysql.connector
 
 
@@ -150,12 +149,10 @@ class HamburguesaService:
     def validar_ingredientes(self, ingredientes):
         required_fields = ["bacon", "huevo", "pepino", "tomate", "cebolla", "lechuga"]
 
-        # Verificar si todos los ingredientes requeridos están presentes
         for field in required_fields:
             if field not in ingredientes:
                 return False
 
-        # Verificar si hay ingredientes adicionales no permitidos
         for field in ingredientes:
             if field not in required_fields:
                 return False

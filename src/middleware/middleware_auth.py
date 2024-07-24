@@ -48,10 +48,10 @@ def admin_required(f):
     @wraps(f)
     @jwt_required()
     def decorated(*args, **kwargs):
-        user_id = get_jwt_identity()  # Obtiene el ID del usuario del token
+        user_id = get_jwt_identity()
         user_service = UserService()
         user = user_service.get_user_by_id(user_id)
-        if user and user.rol_id == 8:  # Verifica si el rol del usuario es admin (rol 8)
+        if user and user.rol_id == 8:
             return f(*args, **kwargs)
         return jsonify({'message': '¡Se requiere acceso de administrador!'}), 403
     return decorated

@@ -10,7 +10,6 @@ from routes.pedidosRoutes import pedidos_routes
 app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'default_secret_key')
 
-# Inicializar JWTManager
 jwt = JWTManager(app)
 
 app.register_blueprint(user_routes, url_prefix='/api')

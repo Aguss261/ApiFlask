@@ -115,13 +115,12 @@ def get_hamburguesa_by_price(price):
     try:
         devolver = hamburguesa_service.get_hamburguesa_by_price(price)
 
-        # Verificación del resultado devuelto por el servicio
         if "error" in devolver:
-            return jsonify(devolver), 404  # Cambiado a 404 para 'no encontrado'
+            return jsonify(devolver), 404
         return jsonify(devolver), 200
 
     except Exception as e:
-        # Manejo de excepciones no esperadas
+
         print(f"Error inesperado: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
 

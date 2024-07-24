@@ -24,13 +24,12 @@ def validar_hamburguesa(hamburguesas):
     ingredientes_fields = ["huevo", "lechuga", "tomate", "cebolla", "bacon", "pepino"]
 
     for hamburguesa in hamburguesas:
-        # Verifica campos requeridos
+
         if not all(field in hamburguesa for field in required_fields):
             missing_fields = [field for field in required_fields if field not in hamburguesa]
             print(f"Campos requeridos faltantes en hamburguesa: {missing_fields}")
             return False
 
-        # Verifica campos de ingredientes
         ingredientes = hamburguesa.get("ingredientes", {})
         if not all(field in ingredientes for field in ingredientes_fields):
             missing_ingredientes = [field for field in ingredientes_fields if field not in ingredientes]
