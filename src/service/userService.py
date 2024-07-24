@@ -1,3 +1,6 @@
+from flask import jsonify
+from flask_jwt_extended import get_jwt_identity
+
 from src.database.conexion import get_mysql_connection
 from src.models.user import User
 import mysql.connector
@@ -41,17 +44,14 @@ class UserService:
         try:
             cursor = self.connection.cursor(dictionary=True)
             query = """
-                SELECT u.id, u.username, u.email, u.password_hash, u.direccion, ur.rol_id
+                SELECT u.id, u.username, u.email, u.password_hash, u.direccion, ur.rol_id AS rol_id
                 FROM usuario u
                 JOIN usuario_roles ur ON u.id = ur.usuario_id
                 WHERE u.username = %s
             """
             cursor.execute(query, (username,))
             result = cursor.fetchone()
-            if result:
-                result['rol_id'] = result.pop('rol_id')
-                return User(**result)
-            return None
+            return User(**result) if result else None
         except Error as e:
             print(f"Error al obtener usuario por nombre de usuario: {e}")
             return None
@@ -69,9 +69,30 @@ class UserService:
             """
             cursor.execute(query, (user_id,))
             result = cursor.fetchone()
-            return User(**result) if result else None
+            if result:
+                result['rol_id'] = result.pop('rol_id', None)
+                return User(**result)
+            return None
         except Error as e:
             print(f"Error al obtener usuario por ID: {e}")
+            return None
+        finally:
+            cursor.close()
+
+
+    def get_users(self):
+        try:
+            cursor = self.connection.cursor(dictionary=True)
+            query = """
+                SELECT u.*, ur.rol_id as role_id
+                FROM usuario u
+                JOIN usuario_roles ur ON u.id = ur.usuario_id
+            """
+            cursor.execute(query)
+            results = cursor.fetchall()
+            return results
+        except Error as e:
+            print(f"Error al obtener usuarios: {e}")
             return None
         finally:
             cursor.close()

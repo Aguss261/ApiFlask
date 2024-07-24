@@ -21,6 +21,7 @@ def handle_createPedido():
     return create_pedido()
 
 @pedidos_routes.route("/pedidos/id/<int:id>", methods=["GET"])
+@admin_required
 def handle_getPedidoById(id):
     return get_pedidos_by_id(id)
 
@@ -37,6 +38,7 @@ def handle_getPedidoByUser(id):
 
 
 @pedidos_routes.route("/pedidos/fecha/<fecha>", methods=["GET"])
+@admin_required
 def handle_getPedidoByFecha(fecha):
     return get_pedidos_by_fecha(fecha)
 

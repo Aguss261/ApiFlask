@@ -9,7 +9,7 @@ class User:
         self.direccion = direccion
         self.created_at = created_at
         self.updated_at = updated_at
-        self.rol_id = rol_id
+        self.rol_id  = rol_id
 
     def set_password(self, password):
         self.password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())

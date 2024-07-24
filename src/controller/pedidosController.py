@@ -64,13 +64,15 @@ def get_pedidos_by_fecha(fecha):
         return jsonify({"Error": "Error interno al obtener el pedido"}), 500
 
 
+
+#lo busco por el id del jwt
 def get_pedidos_by_user():
 
     try:
         user_id = get_jwt_identity()
         if user_id is None:
             return jsonify({"Error": "Id Inexsistente"}), 500
-        pedido = pedidos_service.get_pedido_by_user(user_id)
+        pedido = pedidos_service.get_pedido_by_user_id(user_id)
         if pedido is None:
             return jsonify({"Error": "Error buscando el pedido"}), 500
         return jsonify(pedido), 200
@@ -118,7 +120,7 @@ def delete_pedido(pedido_id):
 def edit_pedido(pedido_id):
     data = request.get_json()
 
-    campos_esperados = {"direccion", "hamburguesas", "price"}
+    campos_esperados = {"direccion", "hamburguesas", "state"}
 
     es_valido, mensaje_error = verificar_campos_extra(data, campos_esperados)
     if not es_valido:
@@ -126,14 +128,15 @@ def edit_pedido(pedido_id):
 
     direccion = data.get("direccion")
     hamburguesas = data.get("hamburguesas")
+    state = data.get("state")
 
 
-    if not direccion or not isinstance(hamburguesas, list) or not hamburguesas:
+    if not direccion or not isinstance(hamburguesas, list) or not hamburguesas or not state:
         return jsonify({"error": "El campo 'Faltan datos requeridos"}), 400
 
     user_id = get_jwt_identity()
 
-    success, result = pedidos_service.edit_pedido(pedido_id,user_id, direccion, hamburguesas)
+    success, result = pedidos_service.edit_pedido(pedido_id,user_id, direccion, hamburguesas, state)
 
     if success:
         return jsonify(result), 201

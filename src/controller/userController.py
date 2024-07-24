@@ -1,5 +1,7 @@
 import bcrypt
 from flask import request, jsonify
+from flask_jwt_extended import get_jwt_identity
+
 from src.service.userService import UserService
 from src.utils.jwt_utils import generate_token
 from src.utils.validator_body import verificar_campos_extra, verificar_campos_extra_nif
@@ -54,5 +56,49 @@ def login():
     if user and bcrypt.checkpw(password.encode('utf-8'), user.password_hash.encode('utf-8')):
         token = generate_token(user.id)
         return jsonify({'token': token}), 200
-    return jsonify({'message': 'Invalid credentials'}), 401
+    return jsonify({'message': 'Credenciales invalidas'}), 401
+
+
+
+def get_users():
+    try:
+        usuarios = user_service.get_users()
+        if usuarios is None:
+            return jsonify({"Error": "Error buscando los usuarios"}), 500
+        return jsonify(usuarios), 200
+    except Exception as e:
+        print(f"Error en la API al obtener los usuarios: {str(e)}")
+        return jsonify({"Error": "Error interno al obtener los usuarios"}), 500
+
+
+
+#lo busco atraves del jwt
+def get_user_by_jwt():
+
+    try:
+        user_id = get_jwt_identity()
+        if user_id is None:
+            return jsonify({"Error": "Id Inexsistente"}), 500
+        devolver = user_service.get_user_by_id(user_id)
+        if devolver is None:
+            return jsonify({"Error": "Error buscando el usuario"}), 500
+        return jsonify(devolver), 200
+    except Exception as e:
+        print(f"Error en la API al obtener el usuario: {str(e)}")
+        return jsonify({"Error": "Error interno al obtener el usuario"}), 500
+
+
+
+def get_user_by_id(user_id):
+
+    try:
+        if user_id is None:
+            return jsonify({"Error": "Id Inexsistente"}), 500
+        devolver = user_service.get_user_by_id(user_id)
+        if devolver is None:
+            return jsonify({"Error": "Error no existe un usuario con esa ID"}), 500
+        return jsonify(devolver.to_dict()), 200
+    except Exception as e:
+        print(f"Error en la API al obtener el usuario: {str(e)}")
+        return jsonify({"Error": "Error interno al obtener el usuario"}), 500
 

@@ -8,6 +8,8 @@ from src.database.conexion import get_mysql_connection
 
 import mysql.connector
 
+from src.utils.validator_body import validar_hamburguesa
+
 
 class PedidosService:
     def __init__(self):
@@ -76,27 +78,6 @@ class PedidosService:
                 cursor.close()
 
 
-    def get_pedido_by_user(self, user_id):
-        cursor = None
-        try:
-            cursor = self.connection.cursor(dictionary=True)
-            sql_query = "SELECT * from pedidos where user_id = %s"
-            cursor.execute(sql_query, (user_id,))
-            resultado = cursor.fetchall()
-            if not resultado:
-                return {"error": "Pedido no encontrado"}, 404
-
-            for pedido in resultado:
-                self.pasar_a_segundos(pedido)
-
-            return resultado
-        except mysql.connector.Error as error:
-            print(f"Error buscando el pedido: {error}")
-            return None
-        finally:
-            if cursor:
-                cursor.close()
-
 
 
     def get_pedido_by_fecha(self, fecha):
@@ -137,9 +118,9 @@ class PedidosService:
             return {"error": str(e)}
 
 
-    def edit_pedido(self, pedido_id, user_id, direccion, hamburguesas):
+    def edit_pedido(self, pedido_id, user_id, direccion, hamburguesas, state):
         cursor = None
-        if not self.validar_hamburguesa(hamburguesas):
+        if not validar_hamburguesa(hamburguesas):
             return False, {"error": "Hamburguesa invalida"}
         try:
             cursor = self.connection.cursor()
@@ -147,10 +128,10 @@ class PedidosService:
             hamburguesas_json = json.dumps(hamburguesas)
             sql_query = """
             UPDATE pedidos
-            SET direccion = %s, hamburguesas = %s, price = %s
+            SET direccion = %s, hamburguesas = %s, price = %s, state = %s
             WHERE pedido_id = %s and user_id = %s
             """
-            cursor.execute(sql_query,(direccion,hamburguesas_json,price,pedido_id,user_id))
+            cursor.execute(sql_query,(direccion,hamburguesas_json,price,state,pedido_id,user_id))
             self.connection.commit()
 
             if cursor.rowcount > 0:
@@ -168,7 +149,7 @@ class PedidosService:
 
     def create_pedido(self, user_id, direccion, hamburguesas):
         cursor = None
-        if not self.validar_hamburguesa(hamburguesas):
+        if not validar_hamburguesa(hamburguesas):
             return False, {"error": "Hamburguesa invalida"}
 
         try:
@@ -198,25 +179,6 @@ class PedidosService:
         finally:
             cursor.close()
 
-    def validar_hamburguesa(self, hamburguesas):
-        required_fields = ["id", "nombre", "price", "descripcion", "imgUrl", "ingredientes"]
-        ingredientes_fields = ["huevo", "lechuga", "tomate", "cebolla", "bacon", "pepino"]
-
-        for hamburguesa in hamburguesas:
-            # Verificar campos requeridos en hamburguesa
-            if not all(field in hamburguesa for field in required_fields):
-                missing_fields = [field for field in required_fields if field not in hamburguesa]
-                print(f"Campos requeridos faltantes en hamburguesa: {missing_fields}")
-                return False
-
-            # Verificar campos requeridos en ingredientes
-            ingredientes = hamburguesa.get("ingredientes", {})
-            if not all(field in ingredientes for field in ingredientes_fields):
-                missing_ingredientes = [field for field in ingredientes_fields if field not in ingredientes]
-                print(f"Campos de ingredientes faltantes en hamburguesa: {missing_ingredientes}")
-                return False
-
-        return True
 
 
 
