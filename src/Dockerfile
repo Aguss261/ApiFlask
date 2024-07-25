@@ -5,11 +5,11 @@ FROM python:3.9
 WORKDIR /app
 
 # Copia el archivo de requisitos y luego instala las dependencias
-COPY src/requirements.txt requirements.txt
+COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copia el resto del código fuente
-COPY src/ .
+COPY . .
 
 # Define el comando por defecto
 CMD ["flask", "run", "--host=0.0.0.0"]
