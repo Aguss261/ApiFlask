@@ -6,7 +6,7 @@ COPY requirements.txt requirements.txt
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY src/ .
 
 ENV FLASK_APP=main.py
 ENV FLASK_ENV=development
