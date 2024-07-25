@@ -7,8 +7,7 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
+ENV FLASK_APP=src/app.py
+ENV FLASK_RUN_HOST=0.0.0.0
 
-ENV PYTHONPATH=/app
-
-CMD ["flask", "run", "--host=0.0.0.0", "--extra-index-url", "https://pypi.org/simple", "--env", "PYTHONPATH=/app"]
-
+CMD ["flask", "run"]
