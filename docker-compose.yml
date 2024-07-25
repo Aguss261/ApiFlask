@@ -1,17 +1,21 @@
 version: '3.8'
+
 services:
   web:
     build:
-      context: ./pyapimysql
-      dockerfile: Dockerfile
+      context: ./src
+      dockerfile: ../Dockerfile  # Esto apunta al Dockerfile en el directorio raíz
     ports:
       - "5000:5000"
     environment:
-      - FLASK_APP=app
       - FLASK_ENV=development
-      - JWT_SECRET_KEY=your_secret_key
+      - FLASK_APP=app.py
+      - JWT_SECRET_KEY=your_jwt_secret_key_here
     volumes:
-      - ./pyapimysql/src:/app
+      - ./src:/app  # Monta el directorio src en el contenedor
+    depends_on:
+      - db
+
   db:
     image: mysql:5.7
     environment:
@@ -19,3 +23,8 @@ services:
       MYSQL_DATABASE: api_flask
     ports:
       - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
