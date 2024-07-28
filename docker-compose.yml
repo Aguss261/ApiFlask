@@ -1,30 +1,32 @@
 version: '3.8'
-
 services:
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "5000:5000"
-    environment:
-      - FLASK_ENV=development
-      - FLASK_APP=src/app.py
-      - JWT_SECRET_KEY=your_jwt_secret_key_here
-    volumes:
-      - .:/app
-    depends_on:
-      - db
-
   db:
     image: mysql:5.7
+    container_name: apiflask-db
     environment:
       MYSQL_ROOT_PASSWORD: admin
       MYSQL_DATABASE: api_flask
+      # Eliminamos MYSQL_USER y MYSQL_PASSWORD ya que usaremos root
     ports:
       - "3306:3306"
-    volumes:
-      - db_data:/var/lib/mysql
+    networks:
+      - mynetwork
 
-volumes:
-  db_data:
+  web:
+    build: .
+    container_name: apiflask-web
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+    environment:
+      MYSQL_HOST: db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: api_flask
+
+networks:
+  mynetwork:
+    driver: bridge
