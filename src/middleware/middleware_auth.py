@@ -1,13 +1,10 @@
-import os
 from functools import wraps
 from flask import request, jsonify
 import jwt
-from jwt import InvalidTokenError
 
-from src.controller.userController import user_service
 from src.service.userService import UserService
-from src.utils.jwt_utils import ExpiredTokenError, SECRET_KEY
-from flask_jwt_extended import verify_jwt_in_request, get_jwt, get_jwt_identity, jwt_required
+from pp import SECRET_KEY
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 
 def decode_token(token):

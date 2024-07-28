@@ -1,9 +1,6 @@
 import json
 import datetime
 
-from MySQLdb import MySQLError
-from flask import jsonify
-
 from src.database.conexion import get_mysql_connection
 
 import mysql.connector

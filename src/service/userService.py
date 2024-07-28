@@ -1,9 +1,5 @@
-from flask import jsonify
-from flask_jwt_extended import get_jwt_identity
-
 from src.database.conexion import get_mysql_connection
 from src.models.user import User
-import mysql.connector
 from mysql.connector import Error
 import bcrypt
 

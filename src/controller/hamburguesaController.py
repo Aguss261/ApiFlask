@@ -1,9 +1,6 @@
-import json
+from flask import request, jsonify
 
-import mysql
-from flask import Blueprint, request, jsonify
-
-from src.service.hamburguesaService import HamburguesaService
+from pp import HamburguesaService
 from src.utils.validator_body import verificar_campos_extra_nif
 
 hamburguesa_service = HamburguesaService()

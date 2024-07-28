@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required
 from src.controller.pedidosController import get_pedidos, create_pedido, get_pedidos_by_id, get_pedidos_by_user_id, \
         get_pedidos_by_fecha, get_pedidos_by_user, delete_pedido, edit_pedido
 
-from src.middleware.middleware_auth import admin_required, token_required
+from src.middleware.middleware_auth import admin_required
 
 pedidos_routes = Blueprint("pedidos_routes", __name__)
 

@@ -1,5 +1,4 @@
 from flask import Blueprint
-from flask_jwt_extended import jwt_required
 
 from src.controller.hamburguesaController import get_hamburguesas, create_hamburguesa, delete_hamburguesa, \
     get_hamburguesa_by_id, editHamburguesa, get_hamburguesa_by_name, get_hamburguesa_by_price

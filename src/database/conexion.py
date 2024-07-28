@@ -1,7 +1,5 @@
-from flask import current_app
-from flask import current_app
 import mysql.connector
-from src.config import DevelopmentConfig
+from pp import DevelopmentConfig
 
 def get_mysql_connection():
     config = {

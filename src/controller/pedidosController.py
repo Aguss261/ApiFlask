@@ -1,13 +1,8 @@
-import datetime
-import json
-
-import jwt
-import mysql
-from flask import Blueprint, request, jsonify
+from flask import request, jsonify
 from flask_jwt_extended import get_jwt_identity
 from src.utils.validator_body import verificar_campos_extra
 
-from src.service.pedidosService import PedidosService
+from pp import PedidosService
 
 pedidos_service = PedidosService()
 

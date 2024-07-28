@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint
 from flask_jwt_extended import jwt_required
 
 from src.controller.userController import register, login, get_users, get_user_by_jwt, get_user_by_id

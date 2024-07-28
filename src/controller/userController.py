@@ -3,8 +3,8 @@ from flask import request, jsonify
 from flask_jwt_extended import get_jwt_identity
 
 from src.service.userService import UserService
-from src.utils.jwt_utils import generate_token
-from src.utils.validator_body import verificar_campos_extra, verificar_campos_extra_nif
+from pp import generate_token
+from src.utils.validator_body import verificar_campos_extra_nif
 
 user_service = UserService()
 
