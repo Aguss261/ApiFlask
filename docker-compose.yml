@@ -5,8 +5,6 @@ services:
     container_name: apiflask-db
     environment:
       MYSQL_ROOT_PASSWORD: admin
-      MYSQL_DATABASE: api_flask
-      # Eliminamos MYSQL_USER y MYSQL_PASSWORD ya que usaremos root
     ports:
       - "3306:3306"
     networks:
