@@ -3,7 +3,7 @@ from flask import request, jsonify
 import jwt
 
 from src.service.userService import UserService
-from pp import SECRET_KEY
+from src.utils.jwt_utils import ExpiredTokenError, SECRET_KEY
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 

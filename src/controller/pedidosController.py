@@ -2,7 +2,7 @@ from flask import request, jsonify
 from flask_jwt_extended import get_jwt_identity
 from src.utils.validator_body import verificar_campos_extra
 
-from pp import PedidosService
+from src.service.pedidosService import PedidosService
 
 pedidos_service = PedidosService()
 

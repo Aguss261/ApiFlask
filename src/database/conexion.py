@@ -1,5 +1,5 @@
 import mysql.connector
-from pp import DevelopmentConfig
+from src.config import DevelopmentConfig
 
 def get_mysql_connection():
     config = {

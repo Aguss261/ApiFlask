@@ -1,6 +1,6 @@
 from flask import request, jsonify
 
-from pp import HamburguesaService
+from src.service.hamburguesaService import HamburguesaService
 from src.utils.validator_body import verificar_campos_extra_nif
 
 hamburguesa_service = HamburguesaService()
