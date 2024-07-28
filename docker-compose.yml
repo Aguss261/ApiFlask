@@ -3,7 +3,7 @@ version: '3.8'
 services:
   web:
     build:
-      context: pp
+      context: src
       dockerfile: Dockerfile
     ports:
       - "5000:5000"
